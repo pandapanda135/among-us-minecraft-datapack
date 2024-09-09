@@ -1,0 +1,306 @@
+dir "INCLUDE DIRECTORY HERE"
+
+reset
+    tell @a "{Y{UThe among us datapack has been successfully loaded!"
+    /scoreboard objectives add ag_among_us.death_tracker deathCount
+    /scoreboard objectives add ag_among_us.no_reaper trigger
+    /team add contestant_1 "player_1"
+    /team modify contestant_1 color red
+    /team add contestant_2 "player_2"
+    /team modify contestant_2 color dark_purple
+    /team add contestant_3 "player_3"
+    /team modify contestant_3 color gold
+    /team add contestant_4 "player_4"
+    /team modify contestant_4 color green
+    /team add contestant_5 "player_5"
+    /team modify contestant_5 color aqua
+    /team add contestant_6 "player_6"
+    /team modify contestant_6 color dark_blue
+    /team add contestant_7 "player_7"
+    /team modify contestant_7 color light_purple
+    /team add contestant_8 "player_8"
+    /team modify contestant_8 color white
+    /team add contestant_9 "player_9"
+    /team modify contestant_9 color black
+    /team add contestant_10 "player_10"
+    /team modify contestant_10 color dark_red
+    /team add contestant
+    /team add chill
+    /team add imposters
+end
+
+function randint(_rand_min, _rand_max)
+	_rand_range = _rand_max - _rand_min
+	_random_seed *= 1664525
+	_random_seed += 1013904223
+	return ((_random_seed / 256) % _rand_range) + _rand_min
+end
+
+function start(min_to_start)
+    /scoreboard objectives add game_check dummy
+    /execute as @a run scoreboard players add players game_check 1
+    tell @a "a"
+    min_to_start = 10
+    if game_check <= min_to_start
+        tell @a "aa"
+        tell @a[dx=10,dz=10,dy=10] "cant start needs more players"
+    else
+        tell @a "aaa"
+            /execute run function ag_among_us:add_imposters
+
+        end
+    tell @a "aaaa"
+end
+
+function vent_var_test()
+    /scoreboard objectives add tp_amount dummy "tpamount"
+    /scoreboard players add @p tp_amount 1
+    /execute run function ag_among_us:vent_switch
+end
+
+function vent_switch()
+    switch tp_amount
+        case 1
+            /tp @p ~ ~ ~10
+            tell @a "case 1"
+        end
+        case 2
+            /tp @p ~10 ~ ~
+            tell @a "case 2"
+        end
+        case 3
+            /tp @p ~ ~10 ~
+            tell @a "case 3"
+        end
+    end
+end
+
+function vent(nearest_player)
+    /scoreboard objectives add nearestPlayer dummy
+
+    /execute as @p store result score @s nearestPlayer run data get entity @s
+
+    if nearest_player.team == imposters
+        tell @a "a"
+    end
+end
+function add_imposters(randi)
+    /scoreboard players set min RNG_77 0
+    /scoreboard players set max RNG_77 9
+    /execute run function ag_among_us:rng_rand
+    if number.RNG_77 == 0
+        /team join chill @a[dy=3]
+        /scoreboard players set chill TeamCount 1
+        tell @a "a"
+    else if number.RNG_77 == 8
+        /team join imposters @a[dy=3]
+        /scoreboard players set imposters TeamCount 2
+        tell @a "aa"
+        /give @p minecraft:iron_sword 1
+    else
+        tell @a "aaaa"
+        end
+end
+
+function add_dead()
+    /team join dead @s
+    #add text here
+end
+
+function death_tracker()
+    # Detect if death is greater than 1, and the player is alive
+
+    /execute if entity @s[scores={ag_among_us.death_tracker=1..},team=!dead,team=contestant] run function ag_among_us:add_dead
+
+    # Reset death counter
+
+    /scoreboard players reset @s ag_among_us.death_tracker
+end
+
+function tp_meeting()
+    /tp @a[team=contestant_1] ~-4 ~1 ~3
+
+    /tp @a[team=contestant_2] ~4 ~1 ~-3
+
+    /tp @a[team=contestant_3] ~4 ~1 ~3
+
+    /tp @a[team=contestant_4] ~-4 ~1 ~-3
+
+    /tp @a[team=contestant_5] ~-8 ~1 ~
+
+    /tp @a[team=contestant_6] ~8 ~1 ~
+
+    /tp @a[team=contestant_7] ~1 ~1 ~4
+
+    /tp @a[team=contestant_8] ~-1 ~1 ~-4
+
+    /tp @a[team=contestant_9] ~1 ~1 ~-4
+
+    /tp @a[team=contestant_10] ~-1 ~1 ~4
+end
+
+function reset_all()
+    /function ag_among_us:reset_death_counter
+    /function ag_among_us:reset_teams
+end
+
+function reset_death_counter()
+    /scoreboard players reset @a ag_among_us.death_tracker
+end
+
+function reset_teams()
+    /team empty contestant
+    /team empty dead
+    /team empty contestant_1
+    /team empty contestant_2
+    /team empty contestant_3
+    /team empty contestant_4
+    /team empty contestant_5
+    /team empty contestant_6
+    /team empty contestant_7
+    /team empty contestant_8
+    /team empty contestant_9
+    /team empty contestant_10
+    /team empty imposters
+    /team empty chill
+end
+
+function tick()
+    # Death tracker
+
+    /execute as @a at @s run function ag_among_us:death_tracker
+
+    # Trigger
+
+    /function ag_among_us:ag_trigger
+end
+
+function ag_trigger()
+    # Enable
+
+    /scoreboard players enable @a ag_among_us.no_reaper
+
+    # Detect
+
+    /execute as @a if entity @s[team=contestant,scores={ag_among_us.no_reaper=1..}] run function ag_among_us:remove_reaper
+
+    # Reset
+
+    /scoreboard players set @a ag_among_us.no_reaper 0
+end
+
+
+function hell()
+    /scoreboard players set contestant_1 TeamCount 0
+    /scoreboard players set contestant_2 TeamCount 0
+    /scoreboard players set contestant_3 TeamCount 0
+    /scoreboard players set contestant_4 TeamCount 0
+    /scoreboard players set contestant_5 TeamCount 0
+    /scoreboard players set contestant_6 TeamCount 0
+    /scoreboard players set contestant_7 TeamCount 0
+    /scoreboard players set contestant_8 TeamCount 0
+    /scoreboard players set contestant_9 TeamCount 0
+    /scoreboard players set contestant_10 TeamCount 0
+    /scoreboard players set imposters TeamCount 0
+
+    /execute as @a[team=contestant_1] run scoreboard players add contestant_1 TeamCount 1
+    /execute as @a[team=contestant_2] run scoreboard players add contestant_2 TeamCount 1
+    /execute as @a[team=contestant_3] run scoreboard players add contestant_3 TeamCount 1
+    /execute as @a[team=contestant_4] run scoreboard players add contestant_4 TeamCount 1
+    /execute as @a[team=contestant_5] run scoreboard players add contestant_5 TeamCount 1
+    /execute as @a[team=contestant_6] run scoreboard players add contestant_6 TeamCount 1
+    /execute as @a[team=contestant_7] run scoreboard players add contestant_7 TeamCount 1
+    /execute as @a[team=contestant_8] run scoreboard players add contestant_8 TeamCount 1
+    /execute as @a[team=contestant_9] run scoreboard players add contestant_9 TeamCount 1
+    /execute as @a[team=contestant_10] run scoreboard players add contestant_10 TeamCount 1
+    /execute as @a[team=imposters] run scoreboard players add imposters TeamCount 2
+
+    /execute as @a[team=!contestant_1,team=!contestant_2,team=!contestant_3,team=!contestant_4,team=!contestant_5,team=!contestant_6,team=!contestant_7,team=!contestant_8,team=!contestant_9,team=!contestant_10] if score contestant_1 TeamCount matches 0 run team join contestant_1 @s
+    /execute as @a[team=!contestant_1,team=!contestant_2,team=!contestant_3,team=!contestant_4,team=!contestant_5,team=!contestant_6,team=!contestant_7,team=!contestant_8,team=!contestant_9,team=!contestant_10] if score contestant_2 TeamCount matches 0 run team join contestant_2 @s
+    /execute as @a[team=!contestant_1,team=!contestant_2,team=!contestant_3,team=!contestant_4,team=!contestant_5,team=!contestant_6,team=!contestant_7,team=!contestant_8,team=!contestant_9,team=!contestant_10] if score contestant_3 TeamCount matches 0 run team join contestant_3 @s
+    /execute as @a[team=!contestant_1,team=!contestant_2,team=!contestant_3,team=!contestant_4,team=!contestant_5,team=!contestant_6,team=!contestant_7,team=!contestant_8,team=!contestant_9,team=!contestant_10] if score contestant_4 TeamCount matches 0 run team join contestant_4 @s
+    /execute as @a[team=!contestant_1,team=!contestant_2,team=!contestant_3,team=!contestant_4,team=!contestant_5,team=!contestant_6,team=!contestant_7,team=!contestant_8,team=!contestant_9,team=!contestant_10] if score contestant_5 TeamCount matches 0 run team join contestant_5 @s
+    /execute as @a[team=!contestant_1,team=!contestant_2,team=!contestant_3,team=!contestant_4,team=!contestant_5,team=!contestant_6,team=!contestant_7,team=!contestant_8,team=!contestant_9,team=!contestant_10] if score contestant_6 TeamCount matches 0 run team join contestant_6 @s
+    /execute as @a[team=!contestant_1,team=!contestant_2,team=!contestant_3,team=!contestant_4,team=!contestant_5,team=!contestant_6,team=!contestant_7,team=!contestant_8,team=!contestant_9,team=!contestant_10] if score contestant_7 TeamCount matches 0 run team join contestant_7 @s
+    /execute as @a[team=!contestant_1,team=!contestant_2,team=!contestant_3,team=!contestant_4,team=!contestant_5,team=!contestant_6,team=!contestant_7,team=!contestant_8,team=!contestant_9,team=!contestant_10] if score contestant_8 TeamCount matches 0 run team join contestant_8 @s
+    /execute as @a[team=!contestant_1,team=!contestant_2,team=!contestant_3,team=!contestant_4,team=!contestant_5,team=!contestant_6,team=!contestant_7,team=!contestant_8,team=!contestant_9,team=!contestant_10] if score contestant_9 TeamCount matches 0 run team join contestant_9 @s
+    /execute as @a[team=!contestant_1,team=!contestant_2,team=!contestant_3,team=!contestant_4,team=!contestant_5,team=!contestant_6,team=!contestant_7,team=!contestant_8,team=!contestant_9,team=!contestant_10] if score contestant_10 TeamCount matches 0 run team join contestant_10 @s
+
+
+    /execute as @s[team=!imposters] if score imposters TeamCount matches 0 run team join imposters @s
+end
+
+
+function rng_tick()
+    /scoreboard players add #clock_time RNG_77 1
+    /execute if score #clock_time RNG_77 matches 992.. run scoreboard players set #clock_time RNG_77 1
+end
+
+function rng_init()
+    #add scores
+    /scoreboard objectives add RNG_77 dummy "Random NumGen"
+    /scoreboard objectives add RNG_77_rp minecraft.custom:minecraft.walk_one_cm "Random NumGen-walk"
+
+
+ #	set initial scores
+    /execute unless score #const2 RNG_77 matches 1.. run scoreboard players set #const2 RNG_77 3
+    /scoreboard players add #prev_number RNG_77 0
+    /scoreboard players set #m1 RNG_77 -1
+    /scoreboard players add #clock_time RNG_77 1
+ #	other scores: { clock_time, prev_number, number, max & min
+end
+
+function rng_rand()
+ # load last number to new
+/scoreboard players operation number RNG_77 = #prev_number RNG_77
+/scoreboard players operation number RNG_77 -= #const2 RNG_77
+/scoreboard players operation number RNG_77 *= #clock_time RNG_77
+/execute store result score #moreRand RNG_77 run data get entity @e[limit=1,sort=random] {}
+/scoreboard players operation #moreRand RNG_77 *= #clock_time RNG_77_rp
+/scoreboard players operation number RNG_77 -= #moreRand RNG_77_rp
+/scoreboard players operation #number2 RNG_77 = number RNG_77_rp
+/scoreboard players operation #number2 RNG_77 *= #const2 RNG_77_rp
+/scoreboard players operation #number2 RNG_77 /= #clock_time RNG_77_rp
+/scoreboard players operation #number2 RNG_77 %= #clock_time RNG_77_rp
+/scoreboard players operation number RNG_77 -= #number2 RNG_77_rp
+# scoreboard players operation number RNG_77 /= #const2 RNG_77_rp
+# scoreboard players operation number RNG_77 *= #clock_time RNG_77_rp
+/scoreboard players operation number RNG_77 += @r RNG_77_rp
+/scoreboard players operation number RNG_77 += #prev_number RNG_77
+
+
+ # make not negative
+/execute if score number RNG_77 matches ..0 run scoreboard players operation number RNG_77 *= #m1 RNG_77
+ # save new number to last
+/scoreboard players operation #prev_number RNG_77 = number RNG_77
+/scoreboard players operation #prev_number RNG_77 -= #clock_time RNG_77
+/scoreboard players operation #prev_number RNG_77 /= #const2 RNG_77
+
+ # trim new number to <`min`, `max`>
+/scoreboard players operation max RNG_77 > min RNG_77
+/scoreboard players operation #max2 RNG_77 = max RNG_77
+/execute if score #max2 RNG_77 matches 1.. run scoreboard players add #max2 RNG_77 1
+/scoreboard players operation #max2 RNG_77 -= min RNG_77
+/execute if score max RNG_77 matches 1.. run scoreboard players operation number RNG_77 %= #max2 RNG_77
+/scoreboard players operation number RNG_77 += min RNG_77
+
+ # reset it back to 0
+# /scoreboard players set max RNG_77 0
+# /scoreboard players set min RNG_77 0
+end
+
+
+
+# function add_imposters(randi)
+#     randi= /random value 0..9
+#     if randi == 0..7
+#         /team join imposters @a[dy=3]
+#         /scoreboard players set PandaPandas135 TeamCount 1
+#     else
+#         end
+#     if imposters.TeamCount == 1
+#         /team join imposters @a[dy=3]
+#         /scoreboard players set PandaPandas135 TeamCount 2
+#     else
+#         end
+# end
